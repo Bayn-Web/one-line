@@ -7,6 +7,6 @@ const file = readFileSync("./package.json", {
 
 const json = JSON.parse(file);
 
-json.name = "@bayn-web/miniframe";
+json.name = "@bayn-web/oneline";
 
 writeFileSync("./package.json", JSON.stringify(json, undefined, 2));
