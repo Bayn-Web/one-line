@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
-      - run: node gpr-hack.js
+      - run: ./githubHook.sh
       - run: npm i
       - run: npm run build
       - run: npm publish
