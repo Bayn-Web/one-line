@@ -18,6 +18,7 @@ jobs:
         with:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
+      - run: chmod +x githubHook.sh
       - run: ./githubHook.sh
       - run: npm i
       - run: npm run build
