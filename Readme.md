@@ -10,13 +10,13 @@ If you don't like cron, it also provides a `object literal` way to schedule task
 ## how to install
 
 ```cmd
-npm install oneline
+npm install @bayn/oneline
 ```
 
 or
 
 ```cmd
-pnpm i oneline
+pnpm i @bayn/oneline
 ```
 
 ## how to use
