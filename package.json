@@ -1,7 +1,7 @@
 {
   "name": "@bayn/oneline",
   "author": "Bayn Web",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "Schedule all your tasks in one line",
   "lib": "./js/lib/index.js",
   "scripts": {
