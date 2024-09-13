@@ -1,15 +1,16 @@
 name: NPM Package Publish
 
 on:
- push:
+  push:
     branches:
       - release
-      
+
 jobs:
-  publish:
-    environment: NPM_TOKEN
+  check_version_and_publish:
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: read # 用于访问仓库内容
+      packages: write # 用于管理包
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,9 +20,41 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
-      - run: npm i
-      - run: npm run build
-      - run: npm publish
+
+      - name: Get current version
+        id: get_current_version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+
+      - name: Get latest published version
+        id: get_latest_published_version
+        run: |
+          LATEST_PACKAGE_JSON=$(curl --silent https://raw.githubusercontent.com/Bayn-Web/one-line/release/package.json)
+          LATEST_VERSION=$(echo $LATEST_PACKAGE_JSON | jq -r .version)
+          echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if version has changed
+        id: check_version_change
+        run: |
+          if [ "${{ steps.get_current_version.outputs.VERSION }}" = "${{ steps.get_latest_published_version.outputs.LATEST_VERSION }}" ]; then
+            echo "Version has not changed, skipping publish."
+            echo "::set-output name=skip::true"
+          else
+            echo "Version has changed, proceeding with publish."
+            echo "::set-output name=skip::false"
+          fi
+
+      - name: Install dependencies
+        if: steps.check_version_change.outputs.skip != 'true'
+        run: npm i
+
+      - name: Build project
+        if: steps.check_version_change.outputs.skip != 'true'
+        run: npm run build
+
+      - name: Publish package
+        if: steps.check_version_change.outputs.skip != 'true'
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.TOKEN}}
           NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
+          
