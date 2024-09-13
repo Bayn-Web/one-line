@@ -28,7 +28,8 @@ jobs:
       - name: Get latest published version
         id: get_latest_published_version
         run: |
-          LATEST_VERSION=$(curl --silent -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/packages/npm/${{ github.repository }}/versions | jq -r '.[0].metadata[0].value')
+          LATEST_PACKAGE_JSON=$(curl --silent https://raw.githubusercontent.com/Bayn-Web/one-line/release/package.json)
+          LATEST_VERSION=$(echo $LATEST_PACKAGE_JSON | jq -r .version)
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_OUTPUT
 
       - name: Check if version has changed
