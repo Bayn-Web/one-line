@@ -1,24 +1,57 @@
 name: Github Package Publish
 
 on:
- push:
+  push:
     branches:
       - release
-      
+
 jobs:
-  publish:
+  check_version_and_publish:
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: read # 用于访问仓库内容
+      packages: write # 用于管理包
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
-      - run: bash ./githubHook.sh
-      - run: npm i
-      - run: npm run build
-      - run: npm publish
+
+      - name: Get current version
+        id: get_current_version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+
+      - name: Get latest published version
+        id: get_latest_published_version
+        run: |
+          LATEST_VERSION=$(curl --silent -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/packages/npm/${{ github.repository }}/versions | jq -r '.[0].metadata[0].value')
+          echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if version has changed
+        id: check_version_change
+        run: |
+          if [ "${{ steps.get_current_version.outputs.VERSION }}" = "${{ steps.get_latest_published_version.outputs.LATEST_VERSION }}" ]; then
+            echo "Version has not changed, skipping publish."
+            exit 1
+          else
+            echo "Version has changed, proceeding with publish."
+          fi
+
+      - name: Install dependencies
+        if: steps.check_version_change.outcome == 'success'
+        run: npm i
+
+      - name: Build project
+        if: steps.check_version_change.outcome == 'success'
+        run: npm run build
+
+      - name: Publish package
+        if: steps.check_version_change.outcome == 'success'
+        run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_REGISTRY: https://npm.pkg.github.com/

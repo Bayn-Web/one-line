@@ -16,6 +16,8 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
+      - run: |
+          echo KEY: '${TOKEN}' -- '${secrets.TOKEN}'
       - run: npm i
       - run: npm run build
       - run: npm publish
