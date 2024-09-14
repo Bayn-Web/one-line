@@ -6,9 +6,8 @@ on:
       - release
 
 jobs:
-  publish:
-    environment: NPM_TOKEN
   check_version_and_publish:
+    environment: NPM_TOKEN
     runs-on: ubuntu-latest
     permissions:
       contents: read # 用于访问仓库内容
