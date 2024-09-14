@@ -47,6 +47,10 @@ jobs:
         if: steps.check_version_change.outputs.skip != 'true'
         run: npm i
 
+      - name: Fix name for github pkg naming-rule
+        if: steps.check_version_change.outputs.skip != 'true'
+        run: bash ./githubHook.sh
+
       - name: Build project
         if: steps.check_version_change.outputs.skip != 'true'
         run: npm run build

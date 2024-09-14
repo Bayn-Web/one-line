@@ -6,6 +6,8 @@ on:
       - release
 
 jobs:
+  publish:
+    environment: NPM_TOKEN
   check_version_and_publish:
     runs-on: ubuntu-latest
     permissions:
