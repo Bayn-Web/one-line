@@ -7,6 +7,7 @@ on:
 
 jobs:
   check_version_and_publish:
+    environment: NPM_TOKEN
     runs-on: ubuntu-latest
     permissions:
       contents: read # 用于访问仓库内容
@@ -28,8 +29,7 @@ jobs:
       - name: Get latest published version
         id: get_latest_published_version
         run: |
-          LATEST_PACKAGE_JSON=$(curl --silent https://raw.githubusercontent.com/Bayn-Web/one-line/release/package.json)
-          LATEST_VERSION=$(echo $LATEST_PACKAGE_JSON | jq -r .version)
+          LATEST_VERSION=$(npm view @bayn/oneline version)
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_OUTPUT
 
       - name: Check if version has changed
