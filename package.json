@@ -1,11 +1,12 @@
 {
   "name": "@bayn/oneline",
   "author": "Bayn Web",
-  "version": "1.0.1-alpha.2",
+  "version": "1.0.1",
   "description": "Schedule all your tasks in one line",
   "lib": "./js/lib/index.js",
   "scripts": {
     "test": "vitest",
+    "watch": "tsc --watch",
     "build": "vite build"
   },
   "type": "module",
