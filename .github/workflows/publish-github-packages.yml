@@ -28,8 +28,7 @@ jobs:
       - name: Get latest published version
         id: get_latest_published_version
         run: |
-          LATEST_PACKAGE_JSON=$(curl --silent https://www.npmjs.com/package/@bayn/oneline?activeTab=versions)
-          LATEST_VERSION=$(echo "$LATEST_PACKAGE_JSON" | sed -n 's/.*"latest": "\([^"]*\)".*/\1/p')
+          LATEST_VERSION=$(npm view @bayn/oneline version)
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_OUTPUT
 
       - name: Check if version has changed
