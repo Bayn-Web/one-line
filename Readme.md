@@ -3,10 +3,14 @@
 ## what it is
 
 `Oneline` is a cron-like and not-cron-like pure schduler which is able to schedule tasks in a single line.
+
 It allows you to schedule all the tasks in a single timer.
+
 And it is a cron-like scheduler.
+
 If you don't like cron, it also provides a `object literal` way to schedule tasks.
-Lastly, it is pure, no and dependencies.
+
+Lastly, it is pure js-lib, no other dependencies.
 
 ## how to install
 
